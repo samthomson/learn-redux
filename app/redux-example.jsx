@@ -7,7 +7,6 @@ var defaultState = {
     hobbies: [],
     films: []
 }
-var nextHobbyId = 1, nextMovieId = 1
 
 var oldReducer = (state = defaultState, action) => {
 
@@ -24,13 +23,24 @@ var oldReducer = (state = defaultState, action) => {
     }
 }
 
+// name reducer and action generators
+// ----------------------------------
 var nameReducer = (state = 'anonymous', action) => {
     switch(action.type) {
         case 'CHANGE_NAME': return action.name
         default: return state
     }
 }
+var changeName = (name) => {
+    return {
+        type: 'CHANGE_NAME',
+        name
+    }
+}
 
+// hobby reducer and action generators
+// ----------------------------------
+var nextHobbyId = 1 
 var hobbiesReducer = (state = [], action) => {
     switch(action.type) {
         case 'ADD_HOBBY':
@@ -48,7 +58,22 @@ var hobbiesReducer = (state = [], action) => {
         default: return state
     }
 }
+var addHobby = (hobby) => {
+    return {
+        type: 'ADD_HOBBY',
+        hobby
+    }
+}
+var removeHobby = (id) => {
+    return {
+        type: 'REMOVE_HOBBY',
+        id
+    }
+}
 
+// films reducer and action generators
+// ----------------------------------
+var nextMovieId = 1
 var filmsReducer = (state = [], action) => {
     switch(action.type) {
         case 'ADD_FILM':
@@ -73,6 +98,20 @@ var reducer = redux.combineReducers({
     hobbies: hobbiesReducer,
     films: filmsReducer
 })
+var addFilm = (title, genre) => {
+    return {
+        type: 'ADD_FILM',
+        title,
+        genre
+    }
+}
+var removeFilm = (id) => {
+    return {
+        type: 'REMOVE_FILM',
+        id
+    }
+}
+
 
 var store = redux.createStore(reducer, redux.compose(
     window.devToolsExtension ? window.devToolsExtension () : f => f
@@ -87,40 +126,13 @@ var unsubscribe = store.subscribe(() => {
     document.getElementById('app').innerHTML = state.name
 })
 
-store.dispatch({
-    type: 'CHANGE_NAME',
-    name: 'Sam'
-})
+store.dispatch(changeName('Sam'))
 
-store.dispatch({
-    type: 'ADD_HOBBY',
-    hobby: 'Photography'
-})
+store.dispatch(addHobby('Photography'))
+store.dispatch(removeHobby(1))
 
-store.dispatch({
-    type: 'REMOVE_HOBBY',
-    id: 1
-})
+store.dispatch(addFilm('The Shining', 'horror'))
+store.dispatch(addFilm('Reservoir dogs', 'classic'))
+store.dispatch(removeFilm(2))
 
-store.dispatch({
-    type: 'ADD_FILM',
-    title: 'The Shining',
-    genre: 'horror'
-})
-
-store.dispatch({
-    type: 'ADD_FILM',
-    title: 'Reservoir dogs',
-    genre: 'classic'
-})
-
-store.dispatch({
-    type: 'REMOVE_FILM',
-    id: 2
-})
-
-
-store.dispatch({
-    type: 'CHANGE_NAME',
-    name: 'Samuel'
-})
+store.dispatch(changeName('Samuel'))
