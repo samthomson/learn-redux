@@ -3,9 +3,6 @@ var redux = require('redux')
 console.log('starting redux example')
 
 var reducer = (state = {name: 'Anonymous'}, action) => {
-    // state = state || {name: 'Anonymous'}
-
-    console.log('New action ', action)
 
     switch (action.type) {
         case 'CHANGE_NAME':
@@ -17,13 +14,26 @@ var reducer = (state = {name: 'Anonymous'}, action) => {
             return state;
     }
 }
-var store = redux.createStore(reducer);
+var store = redux.createStore(reducer, redux.compose(
+    window.devToolsExtension ? window.devToolsExtension () : f => f
+));
 
-console.log('Current state ', store.getState())
+
+// subscribe to changes
+var unsubscribe = store.subscribe(() => {
+    var state = store.getState()
+
+    console.log('name is ', state.name)
+    document.getElementById('app').innerHTML = state.name
+})
+// unsubscribe()
 
 store.dispatch({
     type: 'CHANGE_NAME',
     name: 'Sam'
 })
 
-console.log('Name should be sam ', store.getState())
+store.dispatch({
+    type: 'CHANGE_NAME',
+    name: 'Samuel'
+})
