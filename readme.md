@@ -1,1 +1,1 @@
-Boilerplate React App
+barebone react app with redux
